@@ -1,0 +1,18 @@
+# idea project
+.idea
+
+# Compiled class files
+*.class
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+bin
+
+# MacOS ignores
+.DS_Store
+
+# Ignore version file
+version.txt
