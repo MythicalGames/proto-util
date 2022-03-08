@@ -33,3 +33,12 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew build
+      - name: Publish to Maven Central
+        if: github.ref == 'refs/heads/actions' && github.event_name == 'workflow_dispatch'
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+          ORG_GRADLE_PROJECT_ossrhUsername: 'mythical_keith'
+          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+        run: |
+          ./gradlew build publishMavenJavaPublicationToMavenCentralRepository -x test
