@@ -1,5 +1,6 @@
-# idea project
+# projects
 .idea
+.vscode
 
 # Compiled class files
 *.class
