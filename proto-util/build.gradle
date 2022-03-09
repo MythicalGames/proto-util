@@ -29,6 +29,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(11)
     }
+    withSourcesJar()
+    withJavadocJar()
 }
 
 repositories {
@@ -81,6 +83,15 @@ publishing {
                     license {
                         name = "The Apache License, Version 2.0"
                         url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+
+                developers {
+                    developer {
+                        name = 'Keith Miller'
+                        email = 'keith@mythical.games'
+                        organization = 'Mythical Games'
+                        organizationUrl = 'https://mythical.games'
                     }
                 }
             }
