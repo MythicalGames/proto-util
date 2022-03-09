@@ -33,8 +33,19 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew build
-      - name: Publish to Maven Central
+      - name: Publish to Github
         if: github.ref == 'refs/heads/actions' && github.event_name == 'push'
+        env:
+          GITHUB_USER: 'Mythical Buildbot'
+          GITHUB_TOKEN: ${{ github.token }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+          ORG_GRADLE_PROJECT_ossrhUsername: 'mythical_keith'
+          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+        run: |
+          ./gradlew build publishMavenJavaPublicationToGitHubPackagesRepository -x test
+      - name: Publish to Maven Central
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
