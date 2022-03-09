@@ -16,18 +16,21 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'signing'
     id "com.google.protobuf" version "0.8.18"
     id "io.freefair.lombok" version "6.4.1"
     id "com.adarshr.test-logger" version "3.1.0"
 }
 
 group = "games.mythical"
-version = "0.0.1-SNAPSHOT"
+version = "0.1.1-SNAPSHOT"
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(11)
     }
+    withSourcesJar()
+    withJavadocJar()
 }
 
 repositories {
@@ -44,6 +47,24 @@ dependencies {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = uri('https://maven.pkg.github.com/MythicalGames/proto-util')
+            credentials {
+                username = project.findProperty('github.user') ?: System.getenv('GITHUB_USER')
+                password = project.findProperty('github.token') ?: System.getenv('GITHUB_TOKEN')
+            }
+        }
+        maven {
+            name = 'MavenCentral'
+            url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            credentials {
+                username = project.findProperty('ossrhUsername')
+                password = project.findProperty('ossrhPassword')
+            }
+        }
+    }
     publications {
         mavenJava(MavenPublication) {
             pom {
@@ -64,9 +85,29 @@ publishing {
                         url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
                     }
                 }
+
+                developers {
+                    developer {
+                        name = 'Keith Miller'
+                        email = 'keith@mythical.games'
+                        organization = 'Mythical Games'
+                        organizationUrl = 'https://mythical.games'
+                    }
+                }
             }
         }
     }
+}
+
+tasks.withType(Sign) {
+    onlyIf { project.hasProperty('signingKey') && project.hasProperty('signingPassword') }
+}
+
+signing {
+    // switch to this and comment out the following line to test signing locally
+    // useGpgCmd()
+    useInMemoryPgpKeys(project.findProperty('signingKey'), findProperty('signingPassword'))
+    sign publishing.publications.mavenJava
 }
 
 tasks.named('test') {

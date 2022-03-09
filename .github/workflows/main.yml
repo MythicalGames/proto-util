@@ -1,0 +1,54 @@
+on:
+  push:
+    branches:
+      - develop
+      - master
+    paths-ignore:
+      - "**/README.md"
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+          token: ${{ secrets.BUILDBOT_PERSONAL_TOKEN }}
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - name: Build with Gradle
+        run: |
+          ./gradlew build
+      - name: Publish to Github
+        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+        env:
+          GITHUB_USER: 'Mythical Buildbot'
+          GITHUB_TOKEN: ${{ github.token }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+          ORG_GRADLE_PROJECT_ossrhUsername: 'mythical_keith'
+          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+        run: |
+          ./gradlew build publishMavenJavaPublicationToGitHubPackagesRepository -x test
+      - name: Publish to Maven Central
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+          ORG_GRADLE_PROJECT_ossrhUsername: 'mythical_keith'
+          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+        run: |
+          ./gradlew build publishMavenJavaPublicationToMavenCentralRepository -x test

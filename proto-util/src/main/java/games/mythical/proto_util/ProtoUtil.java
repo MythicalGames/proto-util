@@ -36,6 +36,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class will convert protocol buffer classes to Java beans using Lombok builder.
+ */
 public class ProtoUtil {
   private static final Logger log = LoggerFactory.getLogger(ProtoUtil.class);
 
@@ -43,20 +46,58 @@ public class ProtoUtil {
   private static final String LOMBOK_BUILDER_NAME = "builder";
   private static final String BUILD_METHOD_NAME = "build";
 
+  /**
+   * Converts protocol buffer object to Lombok builder for Java bean. This method
+   * should be used when some manual conversion needs to be done.
+   *
+   * @param source protocol buffer object to convert
+   * @param dtoBuilderClass class of builder to create
+   * @param <P> protocol buffer object type
+   * @param <T> builder class
+   * @return Lombok builder for Java bean
+   */
   public static <P, T> T toDtoBuilder(final P source, final Class<T> dtoBuilderClass) {
     //noinspection unchecked
     return (T) convertToBuilder(source, getBuiltClassFromBuilder(dtoBuilderClass), false);
   }
 
+  /**
+   * Converts protocol buffer object to Lombok-based Java bean.
+   *
+   * @param source protocol buffer object to convert
+   * @param resultClass class of Java bean
+   * @param <P> protocol buffer object type
+   * @param <T> Java bean type
+   * @return Instance of Java bean populated with protocol buffer object data
+   */
   public static <P, T> T toDto(final P source, final Class<T> resultClass) {
     return convert(source, resultClass, false);
   }
 
+  /**
+   * Converts Lombok-based Java bean to protocol buffer builder. This method
+   * should be used when some manual conversion needs to be done.
+   *
+   * @param source Lombok-based Java bean to convert
+   * @param protoBuilderClass class of builder to create
+   * @param <S> Lombok-based Java bean type
+   * @param <P> protocol buffer builder type
+   * @return Protocol buffer builder
+   */
   public static <S, P extends MessageOrBuilder> P toProtoBuilder(final S source, final Class<P> protoBuilderClass) {
     //noinspection unchecked
     return (P) convertToBuilder(source, getBuiltClassFromBuilder(protoBuilderClass), true);
   }
 
+  /**
+   * Converts Lombok-based Java bean to protocol buffer object.
+   *
+   * @param source Lombok-based Java bean object
+   * @param protoClass class of protocol buffer type to create
+   * @param <S> Lombok-based Java bean type
+   * @param <P> protocol buffer object type
+   * @return Instance of Protocol Buffer type populated with Java bean object data
+   */
   public static <S, P extends MessageOrBuilder> P toProto(final S source, final Class<P> protoClass) {
     return convert(source, protoClass, true);
   }
