@@ -1,7 +1,6 @@
 on:
   push:
     branches:
-      - actions
       - develop
       - master
     paths-ignore:
@@ -45,7 +44,7 @@ jobs:
         run: |
           ./gradlew build publishMavenJavaPublicationToGitHubPackagesRepository -x test
       - name: Publish to Maven Central
-        if: github.ref == 'refs/heads/actions' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
