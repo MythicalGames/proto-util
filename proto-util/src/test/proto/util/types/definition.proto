@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "games.mythical.proto_util.util.types";
+
+package proto_util.util.types;
+
+message SimpleUuid {
+  string test_id = 1;
+}
+
+message SimpleBigDecimal {
+  string amount = 1;
+}
