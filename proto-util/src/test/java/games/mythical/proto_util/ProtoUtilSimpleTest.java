@@ -3,13 +3,14 @@ package games.mythical.proto_util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import games.mythical.proto_util.testmodels.AltSimpleDto;
+import games.mythical.proto_util.testmodels.SimpleBeanDto;
 import games.mythical.proto_util.testmodels.SimpleDto;
 import games.mythical.proto_util.testmodels.SimpleTypesDto;
 import games.mythical.proto_util.util.simple.SimpleString;
 import games.mythical.proto_util.util.simple.SimpleTypes;
 import org.junit.jupiter.api.Test;
 
-public class ProtoUtilTest {
+public class ProtoUtilSimpleTest {
 
   @Test
   public void testSimpleToProto() {
@@ -22,11 +23,21 @@ public class ProtoUtilTest {
   }
 
   @Test
-  public void testSimpleFromProto() {
+  public void testSimpleFromProtoViaBuilder() {
     final var proto = SimpleString.newBuilder()
         .setValue("Avro")
         .build();
     final var dto = ProtoUtil.toDto(proto, SimpleDto.class);
+
+    assertEquals(proto.getValue(), dto.getValue());
+  }
+
+  @Test
+  public void testSimpleFromProtoViaBean() {
+    final var proto = SimpleString.newBuilder()
+        .setValue("Avro")
+        .build();
+    final var dto = ProtoUtil.toDtoBean(proto, SimpleBeanDto.class);
 
     assertEquals(proto.getValue(), dto.getValue());
   }
