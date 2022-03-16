@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import games.mythical.proto_util.testmodels.AltSimpleDto;
 import games.mythical.proto_util.testmodels.SimpleBeanDto;
 import games.mythical.proto_util.testmodels.SimpleDto;
+import games.mythical.proto_util.testmodels.SimpleSnakeDto;
 import games.mythical.proto_util.testmodels.SimpleTypesDto;
+import games.mythical.proto_util.util.simple.SimpleSnake;
 import games.mythical.proto_util.util.simple.SimpleString;
 import games.mythical.proto_util.util.simple.SimpleTypes;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,26 @@ public class ProtoUtilSimpleTest {
     final var dto = ProtoUtil.toDtoBean(proto, SimpleBeanDto.class);
 
     assertEquals(proto.getValue(), dto.getValue());
+  }
+
+  @Test
+  public void testSimpleSnakeToProto() {
+    final var dto = SimpleSnakeDto.builder()
+        .aVar("Vickers")
+        .build();
+    final var proto = ProtoUtil.toProto(dto, SimpleSnake.class);
+
+    assertEquals(dto.getAVar(), proto.getAVar());
+  }
+
+  @Test
+  public void testSimpleSnakeFromProtoViaBuilder() {
+    final var proto = SimpleSnake.newBuilder()
+        .setAVar("Vickers")
+        .build();
+    final var dto = ProtoUtil.toDto(proto, SimpleSnakeDto.class);
+
+    assertEquals(proto.getAVar(), dto.getAVar());
   }
 
   @Test

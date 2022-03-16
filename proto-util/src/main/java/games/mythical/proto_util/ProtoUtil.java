@@ -317,6 +317,8 @@ public class ProtoUtil {
             name + "_",
             StringUtils.capitalize(name),
             StringUtils.capitalize(name) + "_",
+            StringUtils.uncapitalize(name),
+            StringUtils.uncapitalize(name) + "_",
             "is" + StringUtils.capitalize(name),
             "is" + StringUtils.capitalize(name) + "_");
     }
