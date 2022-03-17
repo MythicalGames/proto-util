@@ -23,7 +23,7 @@ plugins {
 }
 
 group = "games.mythical"
-version = "0.2.0-alpha2"
+version = "0.2.2-alpha"
 
 java {
     toolchain {
@@ -31,6 +31,14 @@ java {
     }
     withSourcesJar()
     withJavadocJar()
+}
+
+sourceSets {
+    test {
+        java {
+            srcDirs "$projectDir/build/generated"
+        }
+    }
 }
 
 repositories {
